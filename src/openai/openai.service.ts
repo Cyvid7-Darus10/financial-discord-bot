@@ -1,7 +1,7 @@
-import OpenAI from 'openai'
-import { OPENAI_API_KEY } from '../config'
+import OpenAI from 'openai';
+import { OPENAI_API_KEY } from '../config';
 
-const openai = new OpenAI({ apiKey: OPENAI_API_KEY })
+const openai = new OpenAI({ apiKey: OPENAI_API_KEY });
 
 export async function getResponseFromOpenAI(prompt: string): Promise<string> {
     try {
@@ -18,14 +18,14 @@ export async function getResponseFromOpenAI(prompt: string): Promise<string> {
                     content: prompt,
                 },
             ],
-        })
+        });
 
         return (
             response?.choices[0]?.message?.content ||
             "Sorry, I couldn't generate a response."
-        )
+        );
     } catch (error) {
-        console.error("Couldn't create completion", error)
-        return 'Sorry, I encountered an error while processing your request.'
+        console.error("Couldn't create completion", error);
+        return 'Sorry, I encountered an error while processing your request.';
     }
 }
