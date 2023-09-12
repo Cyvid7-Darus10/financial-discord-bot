@@ -1,4 +1,4 @@
-import { Client } from 'discord.js'
+import { Client, Message } from 'discord.js'
 import { config } from 'dotenv'
 
 config()
@@ -19,7 +19,7 @@ client.on('ready', () => {
 
 const IGNORE_PREFIX = '!'
 
-client.on('messageCreate', (message) => {
+client.on('messageCreate', (message: Message) => {
     if (message.author.bot) return
     if (!message.content.startsWith(IGNORE_PREFIX)) return
 
