@@ -1,5 +1,5 @@
 import { ClientEvents } from 'discord.js';
-import GPTBotClient from '../discord.model';
+import GPTBotClient from '../discord.service';
 
 /**
  * Class representing an event handler for the bot.

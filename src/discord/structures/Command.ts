@@ -1,6 +1,6 @@
 import { PermissionResolvable, CommandInteraction } from 'discord.js';
 import { SlashCommandBuilder } from '@discordjs/builders';
-import GPTBotClient from '../discord.model';
+import GPTBotClient from '../discord.service';
 
 /**
  * Represents the arguments that a command function will receive when it's executed.
