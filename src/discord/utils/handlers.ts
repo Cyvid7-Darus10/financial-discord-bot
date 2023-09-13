@@ -5,7 +5,7 @@ import {
     TextChannel,
 } from 'discord.js';
 
-import GPTBotClient from '../discord.model';
+import GPTBotClient from '../discord.service';
 import { Event } from '../structures/Event';
 import messages from './messages';
 
