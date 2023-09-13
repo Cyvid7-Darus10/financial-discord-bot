@@ -13,11 +13,14 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "@discordjs/builders": "^1.6.5",
         "@types/jest": "^29.5.4",
         "discord.js": "^14.13.0",
         "dotenv": "^16.3.1",
         "jest": "^29.7.0",
         "openai": "^4.6.0",
+        "path": "^0.12.7",
+        "require-all": "^3.0.0",
         "ts-jest": "^29.1.1"
     },
     "devDependencies": {
