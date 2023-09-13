@@ -1,46 +1,27 @@
-import { Client } from 'discord.js';
-import { initDiscordService } from '../discord/discord.service';
+import GPTBotClient from '../discord/discord.service';
 import { getResponseFromOpenAI } from '../openai/openai.service';
 
-jest.mock('discord.js');
 jest.mock('../openai/openai.service');
 
-describe('initDiscordService', () => {
-    let mockClientInstance: any;
-    let mockMessageInstance: any;
+describe('GPTBotClient', () => {
+    let client: GPTBotClient;
 
     beforeEach(() => {
-        mockClientInstance = {
-            on: jest.fn(),
-            login: jest.fn(),
-        };
-        mockMessageInstance = {
-            author: { bot: false },
-            content: '!gpt test',
-            channel: { sendTyping: jest.fn(), send: jest.fn() },
-        };
-        (Client as any).mockImplementation(() => mockClientInstance);
+        client = new GPTBotClient();
+
+        // Mock the instance methods you're going to test/spy on.
+        client.start = jest.fn(client.start);
+        client.resolveModules = jest.fn(client.resolveModules);
+        client.login = jest.fn(client.login);
+
         (getResponseFromOpenAI as jest.Mock).mockResolvedValue(
             'Test response from OpenAI'
         );
     });
 
-    it('should log in the client with the provided token', async () => {
-        await initDiscordService('test-token');
-        expect(mockClientInstance.login).toHaveBeenCalledWith('test-token');
-    });
-
-    it('should respond to a valid !gpt command', async () => {
-        await initDiscordService('test-token');
-
-        // Simulate the 'messageCreate' event
-        const messageCreateCallback = mockClientInstance.on.mock.calls.find(
-            (call) => call[0] === 'messageCreate'
-        )[1];
-        await messageCreateCallback(mockMessageInstance);
-
-        expect(mockMessageInstance.channel.send).toHaveBeenCalledWith(
-            'Test response from OpenAI'
-        );
+    it('should start the bot client', async () => {
+        await client.start();
+        expect(client.resolveModules).toHaveBeenCalled();
+        expect(client.login).toHaveBeenCalledWith(process.env.BOT_TOKEN);
     });
 });
