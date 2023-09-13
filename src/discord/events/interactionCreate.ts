@@ -1,28 +1,36 @@
+import { Interaction } from 'discord.js';
 import { Event } from '../structures/Event';
+import { handleCommand } from '../utils/handlers';
 
 /**
- * Event module for the 'ready' event. This event is triggered when the bot has
- * successfully logged in and is ready to start its operations.
+ * Event module for the 'interactionCreate' event. This event is triggered whenever
+ * a new interaction, like a slash command, is initiated in a guild where the bot is present.
  *
- * The primary purpose of this event is to deploy the bot's commands to
- * Discord's servers and indicate that the bot is fully operational.
+ * The primary purpose of this event is to detect command interactions and handle
+ * them using the bot's defined command handlers.
  */
 export default new Event({
-    // Name of the event, in this case 'ready', which signifies that the bot is ready for operations.
-    name: 'ready',
+    // Name of the event, in this case 'interactionCreate', which signifies that a new
+    // interaction has been created on Discord.
+    name: 'interactionCreate',
 
-    // The main function to execute when this event is triggered.
-    run: async (client) => {
-        // A log statement to notify that the bot is starting the command deployment process.
-        console.log('Deploying commands');
-
-        // Deploy the bot's commands to Discord's servers. The deployCommands method is
-        // responsible for registering each command with Discord, allowing them to be
-        // used in guilds where the bot is present.
-        await client.deployCommands();
-
-        // A log statement to indicate that all startup procedures are complete, and the bot
-        // is now in a 'ready' state to handle user interactions.
-        console.log('Ready');
+    /**
+     * The primary function to execute when the 'interactionCreate' event is triggered.
+     *
+     * @param {GPTBotClient} client - The instance of our custom Discord bot client.
+     * @param {Interaction} interaction - The interaction object provided by Discord.js,
+     * which contains details about the type of interaction and its context.
+     */
+    run: async (client, interaction: Interaction) => {
+        // Check if the initiated interaction is specifically a command.
+        // There could be other types of interactions like button clicks or message components,
+        // but for this event, we're specifically interested in command interactions.
+        if (interaction.isCommand()) {
+            // If the interaction is identified as a command, delegate the responsibility
+            // of handling this command to the 'handleCommand' utility function.
+            // This function presumably processes the command, checks for permissions,
+            // and executes the appropriate response/actions based on the command's logic.
+            await handleCommand(client, interaction);
+        }
     },
 });
