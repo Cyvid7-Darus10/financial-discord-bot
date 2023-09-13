@@ -1,15 +1,14 @@
-import { initDiscordService } from './discord/discord.service';
-import { BOT_TOKEN } from './config';
+import GPTBotClient from './discord/discord.service';
 
-async function main() {
-    try {
-        // Initialize the Discord service
-        await initDiscordService(BOT_TOKEN as string);
+/**
+ * Initialize the Discord bot service.
+ */
+const initDiscordService = async () => {
+    // Instantiate the custom bot client.
+    const client = new GPTBotClient();
 
-        console.log('Bot is up and running!');
-    } catch (error) {
-        console.error('Failed to start the bot:', error);
-    }
-}
+    // Start the bot client.
+    await client.start();
+};
 
-main();
+initDiscordService();
