@@ -10,11 +10,13 @@ import { Event } from '../structures/Event';
 import messages from './messages';
 
 /**
- * Handles the event
- * @param client Custom client
- * @param event Event object
+ * Registers an event handler for a specific bot event.
+ * Any exception thrown inside the event will be caught and logged to the console.
+ *
+ * @param client - The custom Discord bot client.
+ * @param event - The event object defining the name and the handler function.
  */
-export function handleEvent(client: GPTBotClient, event: Event) {
+export const handleEvent = (client: GPTBotClient, event: Event) => {
     const avoidException = async (...args: any) => {
         try {
             await event.run(client, ...args);
@@ -26,28 +28,32 @@ export function handleEvent(client: GPTBotClient, event: Event) {
     };
 
     client.on(event.name, avoidException);
-}
+};
 
 /**
- * Handles the command
- * @param client Custom client
- * @param interaction Command interaction
+ * Processes the command represented by a given interaction.
+ * It ensures the command exists, verifies permissions, and handles exceptions.
+ *
+ * @param client - The custom Discord bot client.
+ * @param interaction - The interaction representing the command to process.
  */
-export async function handleCommand(
+export const handleCommand = async (
     client: GPTBotClient,
     interaction: CommandInteraction
-) {
+) => {
     await interaction.deferReply();
 
     const { commandName } = interaction;
     const command = client.commands.get(commandName);
 
+    // If the command doesn't exist, inform the user and exit.
     if (!command)
         return await interaction.followUp({
             ephemeral: true,
             embeds: [messages.error().setDescription('Command not found.')],
         });
 
+    // Check if the user has required permissions to execute the command.
     if (
         command.permissions &&
         command.permissions.some(
@@ -66,6 +72,7 @@ export async function handleCommand(
             ],
         });
 
+    // Attempt to execute the command.
     try {
         await command.run({
             client,
@@ -76,6 +83,7 @@ export async function handleCommand(
             `An error occurred in '${command.builder.name}' command.\n${error}\n`
         );
 
+        // Inform the user about the error.
         return await interaction.followUp({
             ephemeral: true,
             embeds: [
@@ -87,4 +95,4 @@ export async function handleCommand(
             ],
         });
     }
-}
+};
