@@ -2,52 +2,51 @@ import { PermissionResolvable, CommandInteraction } from 'discord.js';
 import { SlashCommandBuilder } from '@discordjs/builders';
 import GPTBotClient from '../discord.model';
 
-/** Arguments for command */
+/**
+ * Represents the arguments that a command function will receive when it's executed.
+ */
 export type CommandArgs = {
-    /**
-     * Client
-     */
+    /** The instance of the bot client. */
     client: GPTBotClient;
 
-    /**
-     * Interaction
-     */
+    /** The interaction data containing details of the executed command. */
     interaction: CommandInteraction;
 };
 
+/**
+ * Represents the structure of a command.
+ * It can either be a complete slash command builder or a subset that excludes subcommands.
+ */
 type CommandBuilder =
     | SlashCommandBuilder
     | Omit<SlashCommandBuilder, 'addSubcommand' | 'addSubcommandGroup'>;
 
+/**
+ * Class representing a bot command.
+ */
 export class Command {
-    /**
-     * If true, disables the command
-     */
+    /** Whether the command is disabled and shouldn't be executed. */
     disabled?: boolean;
 
-    /**
-     * Required permissions to run the command
-     */
+    /** A list of permissions required for a user to execute this command. */
     permissions?: PermissionResolvable[];
 
-    /**
-     * If true, only developers can run the command
-     */
+    /** Indicates if the command can only be executed by developers. */
     onlyDev?: boolean;
 
-    /**
-     * Slash command builder
-     */
+    /** Defines the structure and details of the command. */
     builder: CommandBuilder;
 
     /**
-     * Runs the command
+     * The function to run when this command is executed.
+     * @param args - The arguments containing client and interaction data.
+     * @returns The result of the command execution.
      */
     run: (args: CommandArgs) => any;
 
     /**
-     * Creates a new command
-     * @param options Command options
+     * Constructs a new command.
+     * @param options - The properties and behaviors of the command.
      */
     constructor(options: NonNullable<Command>) {
         Object.assign(this, options);
