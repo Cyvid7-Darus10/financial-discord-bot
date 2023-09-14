@@ -2,6 +2,10 @@
 
 Welcome to Nisa.ai's internal Discord bot project. This bot, built using TypeScript, seamlessly integrates with OpenAI's GPT-4 model to facilitate engaging and interactive conversations within our Discord server.
 
+## Architecture
+
+![architecture](./architecture.png)
+
 ## 🌟 Features
 
 -   **OpenAI Integration**: Leverage the advanced capabilities of OpenAI's GPT-4 model to engage and interact with users on our Discord server.

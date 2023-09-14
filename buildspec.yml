@@ -1,0 +1,33 @@
+version: 0.2
+
+phases:
+    install:
+        commands:
+            - echo "Installing dependencies..."
+            - npm install
+
+    pre_build:
+        commands:
+            - echo "Running unit tests..."
+            - npm run test
+            - echo "Compiling TypeScript..."
+            - npm run build
+            - echo "Removing unit tests directory..."
+            - rm -rf ./__tests__
+            - echo "Pruning dev dependencies..."
+            - npm prune --production
+
+    build:
+        commands:
+            - echo "Packaging the application..."
+            - aws cloudformation package --template template.yaml --s3-bucket $S3_BUCKET --output-template template-export.yml
+
+artifacts:
+    type: zip
+    files:
+        - template-export.yml
+        - .env # Only if you need the .env file in the production environment
+
+cache:
+    paths:
+        - 'node_modules/**/*'
