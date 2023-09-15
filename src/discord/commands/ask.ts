@@ -1,6 +1,7 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { Command } from '../structures/Command';
 import { OpenAIService } from '../../openai/openai.service';
+import { PlaidService } from '../../plaid/plaid.service';
 
 /**
  * Discord command module to ask OpenAI's GPT model a question and receive an answer.
@@ -39,22 +40,59 @@ export default new Command({
             return;
         }
 
-        // Interact with the OpenAI API to get a response based on the user's sentence.
-        // The `getResponseFromOpenAI` function is responsible for querying OpenAI
-        // and returning the response.
-        const openAIResponse = await new OpenAIService().getResponse(
-            sentenceOption
+        // Modify the sentenceOption to format the prompt for JSON structured output.
+        const structuredPrompt = `${sentenceOption}. Please provide a response in the format: {"choice": "get_account_routing | get_transactions | check_balance | nothing", "extra_details": {"start_date": "start date if mentioned", "end_date": "end date if mentioned"}}. Please respond the json only. No need for explanation.`;
+        const responseString = await new OpenAIService().getResponse(
+            structuredPrompt
         );
+        let parsedResponse;
 
-        // If there's no valid response from OpenAI, inform the user.
-        if (!openAIResponse) {
+        try {
+            parsedResponse = JSON.parse(responseString);
+        } catch (error) {
+            console.error("Failed to parse OpenAI's response:", error);
+            console.error("OpenAI's response:", responseString);
             await interaction.followUp(
-                "Sorry, I couldn't generate a response."
+                'Sorry, I encountered an error processing the response.'
             );
             return;
         }
 
-        // Send the response from OpenAI back to the user as a follow-up to their query.
-        await interaction.followUp(openAIResponse);
+        let plaidResult;
+        const plaidService = new PlaidService();
+
+        const { choice, extra_details } = parsedResponse;
+        switch (choice) {
+            case 'get_account_routing':
+                plaidResult = await plaidService.getAccountDetails();
+                break;
+
+            case 'get_transactions':
+                const { start_date, end_date } = extra_details;
+                plaidResult = await plaidService.getTransactions(
+                    start_date,
+                    end_date
+                );
+                break;
+
+            case 'check_balance':
+                plaidResult = await plaidService.getAccountBalance();
+                break;
+
+            case 'get_item_details':
+                plaidResult = await plaidService.getItemDetails();
+                break;
+
+            case 'get_accounts':
+                plaidResult = await plaidService.getAccounts();
+                break;
+
+            default:
+                // If none of the cases match, simply return the OpenAI's response.
+                await interaction.followUp(`Unsupported action: ${choice}`);
+                return;
+        }
+
+        await interaction.followUp(JSON.stringify(plaidResult));
     },
 });
