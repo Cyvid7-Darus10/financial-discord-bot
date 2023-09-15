@@ -1,27 +1,47 @@
 import GPTBotClient from '../discord/discord.service';
-import { getResponseFromOpenAI } from '../openai/openai.service';
+import { OpenAIService } from '../openai/openai.service';
+import { BOT_TOKEN } from '../config';
 
 jest.mock('../openai/openai.service');
 
 describe('GPTBotClient', () => {
     let client: GPTBotClient;
+    let mockGetResponse: jest.Mock;
 
     beforeEach(() => {
+        // Spy on the methods without replacing them
+        jest.spyOn(GPTBotClient.prototype, 'start').mockImplementation(
+            async function (this: GPTBotClient) {
+                await this.resolveModules();
+                await this.login(BOT_TOKEN); // Call the mocked login
+            }
+        );
+
+        jest.spyOn(GPTBotClient.prototype, 'resolveModules');
+
+        // Mock the login method
+        jest.spyOn(GPTBotClient.prototype, 'login').mockImplementation(
+            async () => {
+                console.log('Mocked login called');
+                return Promise.resolve('Mocked login response');
+            }
+        );
+
         client = new GPTBotClient();
 
-        // Mock the instance methods you're going to test/spy on.
-        client.start = jest.fn(client.start);
-        client.resolveModules = jest.fn(client.resolveModules);
-        client.login = jest.fn(client.login);
+        // Assuming OpenAIService is instantiated within GPTBotClient
+        mockGetResponse = jest.fn();
+        (OpenAIService.prototype.getResponse as jest.Mock) = mockGetResponse;
+        mockGetResponse.mockResolvedValue('Test response from OpenAI');
+    });
 
-        (getResponseFromOpenAI as jest.Mock).mockResolvedValue(
-            'Test response from OpenAI'
-        );
+    afterEach(() => {
+        jest.resetAllMocks();
     });
 
     it('should start the bot client', async () => {
         await client.start();
         expect(client.resolveModules).toHaveBeenCalled();
-        expect(client.login).toHaveBeenCalledWith(process.env.BOT_TOKEN);
+        expect(client.login).toHaveBeenCalledWith(BOT_TOKEN);
     });
 });
