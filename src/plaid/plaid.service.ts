@@ -1,10 +1,5 @@
-import {
-    Configuration,
-    PlaidApi,
-    PlaidEnvironments,
-    TransactionsGetRequest,
-} from 'plaid';
-import { PLAID_CLIENT_ID, PLAID_SECRET } from '../config';
+import { Configuration, PlaidApi, PlaidEnvironments } from 'plaid';
+import { PLAID_CLIENT_ID, PLAID_SECRET, ACCESS_TOKEN } from '../config';
 
 export class PlaidService {
     private client: PlaidApi;
@@ -22,7 +17,7 @@ export class PlaidService {
         });
 
         this.client = new PlaidApi(configuration);
-        this.accessToken = '';
+        this.accessToken = ACCESS_TOKEN;
     }
 
     /**
@@ -32,10 +27,7 @@ export class PlaidService {
      * @param {string} endDate - The end date for the transactions in the format 'YYYY-MM-DD'.
      * @returns {Promise<any>} - The transactions data or an error message in case of failure.
      */
-    async getTransactions(
-        startDate?: string,
-        endDate?: string
-    ): Promise<any> {
+    async getTransactions(startDate?: string, endDate?: string): Promise<any> {
         try {
             const transactionsResponse = await this.client.transactionsGet({
                 access_token: this.accessToken,
@@ -60,7 +52,9 @@ export class PlaidService {
      */
     async getAccountDetails(): Promise<any> {
         try {
-            const authResponse = await this.client.authGet({ access_token: this.accessToken });
+            const authResponse = await this.client.authGet({
+                access_token: this.accessToken,
+            });
             return authResponse.data;
         } catch (error) {
             console.error("Couldn't fetch account details", error);
@@ -74,7 +68,9 @@ export class PlaidService {
      */
     async getAccountBalance(): Promise<any> {
         try {
-            const balanceResponse = await this.client.accountsBalanceGet({ access_token: this.accessToken });
+            const balanceResponse = await this.client.accountsBalanceGet({
+                access_token: this.accessToken,
+            });
             return balanceResponse.data;
         } catch (error) {
             console.error("Couldn't fetch account balance", error);
@@ -88,7 +84,9 @@ export class PlaidService {
      */
     async getItemDetails(): Promise<any> {
         try {
-            const itemResponse = await this.client.itemGet({ access_token: this.accessToken });
+            const itemResponse = await this.client.itemGet({
+                access_token: this.accessToken,
+            });
             return itemResponse.data;
         } catch (error) {
             console.error("Couldn't fetch item details", error);
@@ -102,7 +100,9 @@ export class PlaidService {
      */
     async getAccounts(): Promise<any> {
         try {
-            const accountsResponse = await this.client.accountsGet({ access_token: this.accessToken });
+            const accountsResponse = await this.client.accountsGet({
+                access_token: this.accessToken,
+            });
             return accountsResponse.data;
         } catch (error) {
             console.error("Couldn't fetch accounts", error);

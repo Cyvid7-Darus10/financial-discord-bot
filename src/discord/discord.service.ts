@@ -10,7 +10,7 @@ import requireAll from 'require-all';
 import { handleEvent } from './utils/handlers';
 import { Command } from './structures/Command';
 import { Event } from './structures/Event';
-import { BOT_TOKEN } from '../config';
+import { BOT_TOKEN, DEVELOPERS, GUILD_ID } from '../config';
 
 /**
  * Custom client extended from Discord's base client. This client provides
@@ -46,7 +46,7 @@ export default class GPTBotClient extends Client {
      */
     async start() {
         try {
-            this.developers = process.env.DEVELOPERS!.split(' ');
+            this.developers = DEVELOPERS;
             await this.resolveModules();
             await this.login(BOT_TOKEN);
         } catch (error) {
@@ -114,7 +114,7 @@ export default class GPTBotClient extends Client {
      */
     async deployCommands() {
         try {
-            const guild = this.guilds.cache.get(process.env.GUILD_ID!)!;
+            const guild = this.guilds.cache.get(GUILD_ID!)!;
             const commandsJSON = [...this.commands.values()].map((x) =>
                 x.builder.toJSON()
             );
@@ -168,7 +168,7 @@ export default class GPTBotClient extends Client {
                 await guild.commands.permissions.set({
                     command: commandPermission.id,
                     permissions: [commandPermission],
-                    token: process.env.BOT_TOKEN,
+                    token: BOT_TOKEN,
                 });
             }
         } catch (error) {
