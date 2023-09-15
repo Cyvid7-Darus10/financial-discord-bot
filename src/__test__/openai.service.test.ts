@@ -1,5 +1,7 @@
+import { OpenAIService } from '../openai/openai.service';
 import OpenAI from 'openai';
 
+// Mock the method within the OpenAI class
 const mockCreate = jest.fn() as jest.MockedFunction<
     typeof OpenAI.prototype.chat.completions.create
 >;
@@ -16,13 +18,11 @@ jest.mock('openai', () => {
     });
 });
 
-const { getResponseFromOpenAI } = require('../openai/openai.service');
-
-describe('getResponseFromOpenAI', () => {
-    let openaiMock;
+describe('OpenAIService', () => {
+    let openaiService: OpenAIService;
 
     beforeEach(() => {
-        openaiMock = new OpenAI();
+        openaiService = new OpenAIService();
     });
 
     afterEach(() => {
@@ -43,7 +43,7 @@ describe('getResponseFromOpenAI', () => {
 
         mockCreate.mockResolvedValue(mockResponse as any);
 
-        const result = await getResponseFromOpenAI(mockPrompt);
+        const result = await openaiService.getResponse(mockPrompt);
 
         expect(result).toBe('Hello, user!');
     });
@@ -60,16 +60,18 @@ describe('getResponseFromOpenAI', () => {
 
         mockCreate.mockResolvedValue(mockResponse as any);
 
-        const result = await getResponseFromOpenAI(mockPrompt);
+        const result = await openaiService.getResponse(mockPrompt);
 
-        expect(result).toBe("Sorry, I couldn't generate a response.");
+        expect(result).toBe(
+            'Sorry, I encountered an error while processing your request.'
+        );
     });
 
     it('should handle errors gracefully', async () => {
         const mockPrompt = 'Hello, AI!';
         mockCreate.mockRejectedValue(new Error('API error'));
 
-        const result = await getResponseFromOpenAI(mockPrompt);
+        const result = await openaiService.getResponse(mockPrompt);
 
         expect(result).toBe(
             'Sorry, I encountered an error while processing your request.'

@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { Command } from '../structures/Command';
-import { getResponseFromOpenAI } from '../../openai/openai.service';
+import { OpenAIService } from '../../openai/openai.service';
 
 /**
  * Discord command module to ask OpenAI's GPT model a question and receive an answer.
@@ -42,7 +42,9 @@ export default new Command({
         // Interact with the OpenAI API to get a response based on the user's sentence.
         // The `getResponseFromOpenAI` function is responsible for querying OpenAI
         // and returning the response.
-        const openAIResponse = await getResponseFromOpenAI(sentenceOption);
+        const openAIResponse = await new OpenAIService().getResponse(
+            sentenceOption
+        );
 
         // If there's no valid response from OpenAI, inform the user.
         if (!openAIResponse) {
