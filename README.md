@@ -1,19 +1,24 @@
 # Discord Bot (Nisa.ai Internal Project)
 
-Welcome to Nisa.ai's internal Discord bot project. This bot, built using TypeScript, seamlessly integrates with OpenAI's GPT-4 model to facilitate engaging and interactive conversations within our Discord server.
+Welcome to Nisa.ai's internal Discord bot project. This bot, built using TypeScript, not only facilitates engaging interactions via OpenAI's GPT-4 model within our Discord server but also integrates with Plaid for advanced financial functionalities.
 
 ## 🌟 Features
 
 -   **OpenAI Integration**: Leverage the advanced capabilities of OpenAI's GPT-4 model to engage and interact with users on our Discord server.
+
+-   **Plaid Integration**: Our bot intelligently integrates with Plaid to offer financial insights, fetch transactions, check account balances, and more, all driven by user input.
+
+-   **Intelligent API Decisions**: Through the integration of OpenAI, our bot is able to derive what Plaid API should be called based on the nuances of user input. It ensures relevant responses and actions are made to fit user inquiries.
+
 -   **TypeScript Powered**: Experience enhanced type safety leading to robust code and a superior developer experience.
 
 -   **Scalable Architecture**: Our bot is designed with the future in mind. Expand and add more features with ease as our needs evolve.
 
 -   **Permission System**: Introducing a versatile permission system! Now, create commands that are only accessible based on custom permissions you set.
 
--   **Developer Exclusive Commands**: Want to restrict certain commands to the developer team? With our new feature, you can design commands exclusively for developers.
+-   **Developer Exclusive Commands**: Restrict certain commands to the developer team. With our new feature, you can design commands exclusively for developers.
 
--   **Disable Commands**: Have commands you no longer want active? You can now easily disable any command to prevent its usage, offering you greater control over the bot's functionalities.
+-   **Disable Commands**: Easily disable any command to prevent its usage, offering you greater control over the bot's functionalities.
 
 ## 🚀 Getting Started
 
@@ -58,13 +63,13 @@ Follow the steps below to get the bot up and running:
     npm start
     ```
 
-For development purposes, utilize:
+For development purposes, use:
 
 ```bash
 npm run dev
 ```
 
-This will watch for any changes in TypeScript files and restart the bot automatically.
+This command watches for any changes in TypeScript files and restarts the bot automatically.
 
 ### Testing
 
@@ -80,6 +85,7 @@ We've integrated some of the best libraries and packages to enhance our bot's fu
 
 -   [discord.js](https://www.npmjs.com/package/discord.js): For seamless Discord API interactions.
 -   [openai](https://www.npmjs.com/package/openai): Official OpenAI Node.js client.
+-   [plaid](https://www.npmjs.com/package/plaid): A powerful library for interacting with the Plaid financial API.
 -   [dotenv](https://www.npmjs.com/package/dotenv): Efficiently manage environment variables.
 -   [jest](https://www.npmjs.com/package/jest) & [ts-jest](https://www.npmjs.com/package/ts-jest): Essential testing utilities for our codebase.
 -   [tsc-watch](https://www.npmjs.com/package/tsc-watch): Enhanced TypeScript compilation.
