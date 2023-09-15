@@ -32,6 +32,9 @@ export class PlaidService {
      * @returns {Promise<any>} - The transactions data or an error message in case of failure.
      */
     async getTransactions(startDate?: string, endDate?: string): Promise<any> {
+        console.log('Fetching transactions...');
+        console.log('Start date:', startDate);
+        console.log('End date:', endDate);
         try {
             const transactionsResponse = await this.client.transactionsGet({
                 access_token: this.accessToken,

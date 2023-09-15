@@ -42,7 +42,18 @@ export default new Command({
         }
 
         // Modify the sentenceOption to format the prompt for JSON structured output.
-        const structuredPrompt = `${sentenceOption}. Please provide a response in the format: {"choice": "get_account_routing | get_transactions | check_balance | nothing", "extra_details": {"start_date": "start date if mentioned and format should be YYYY-MM-DD", "end_date": "end date if mentioned and format should be YYYY-MM-DD"}}. Please respond the json only. No need for explanation.`;
+        const currentDate = dayjs().format('YYYY-MM-DD');
+        const structuredPrompt = `Based on the following functionalities of the PlaidService:
+        1. 'get_transactions' - Fetches transactions for a specific date range from a user's linked bank account.
+        2. 'get_account_routing' - Retrieves account and routing numbers for checking and savings accounts.
+        3. 'check_balance' - Fetches real-time account balances.
+        4. 'get_item_details' - Obtains specific details about a bank item, like the institution and billed products.
+        5. 'get_accounts' - Gets high-level information about all accounts associated with a bank item.
+
+        current_date: ${currentDate}
+        
+        Given the statement '${sentenceOption}', determine the appropriate action. Respond with a JSON in the format: {\"choice\": \"get_account_routing | get_transactions | check_balance | get_item_details | get_accounts | nothing\", \"extra_details\": {\"start_date\": \"If provided, format: YYYY-MM-DD else none\", \"end_date\": \"If provided, format: YYYY-MM-DD else none\"}}. Only return the JSON structure.`;
+
         const responseString = await new OpenAIService().getResponse(
             structuredPrompt
         );
@@ -94,13 +105,17 @@ export default new Command({
 
             default:
                 // If none of the cases match, simply return the OpenAI's response.
+                console.error(
+                    `Unsupported action: ${choice}. OpenAI's response:`,
+                    responseString
+                );
                 await interaction.followUp(`Unsupported action: ${choice}`);
                 return;
         }
 
-        const newPrompt = `Here is the response from Plaid: ${JSON.stringify(
+        const newPrompt = `Here's the data I received: ${JSON.stringify(
             plaidResult
-        )}. Please format it properly so the user can understand it.`;
+        )}. Can you help me present this in a user-friendly manner?`;
 
         const newResponseString = await new OpenAIService().getResponse(
             newPrompt
