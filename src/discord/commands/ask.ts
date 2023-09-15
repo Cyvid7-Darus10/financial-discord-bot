@@ -2,6 +2,7 @@ import { SlashCommandBuilder } from '@discordjs/builders';
 import { Command } from '../structures/Command';
 import { OpenAIService } from '../../openai/openai.service';
 import { PlaidService } from '../../plaid/plaid.service';
+import dayjs from 'dayjs';
 
 /**
  * Discord command module to ask OpenAI's GPT model a question and receive an answer.
@@ -41,7 +42,7 @@ export default new Command({
         }
 
         // Modify the sentenceOption to format the prompt for JSON structured output.
-        const structuredPrompt = `${sentenceOption}. Please provide a response in the format: {"choice": "get_account_routing | get_transactions | check_balance | nothing", "extra_details": {"start_date": "start date if mentioned", "end_date": "end date if mentioned"}}. Please respond the json only. No need for explanation.`;
+        const structuredPrompt = `${sentenceOption}. Please provide a response in the format: {"choice": "get_account_routing | get_transactions | check_balance | nothing", "extra_details": {"start_date": "start date if mentioned and format should be YYYY-MM-DD", "end_date": "end date if mentioned and format should be YYYY-MM-DD"}}. Please respond the json only. No need for explanation.`;
         const responseString = await new OpenAIService().getResponse(
             structuredPrompt
         );
@@ -69,9 +70,13 @@ export default new Command({
 
             case 'get_transactions':
                 const { start_date, end_date } = extra_details;
+                const currentDate = dayjs().format('YYYY-MM-DD');
+                const oldStartDate = dayjs()
+                    .subtract(30, 'day')
+                    .format('YYYY-MM-DD');
                 plaidResult = await plaidService.getTransactions(
-                    start_date,
-                    end_date
+                    start_date || oldStartDate,
+                    end_date || currentDate
                 );
                 break;
 
@@ -93,6 +98,14 @@ export default new Command({
                 return;
         }
 
-        await interaction.followUp(JSON.stringify(plaidResult));
+        const newPrompt = `Here is the response from Plaid: ${JSON.stringify(
+            plaidResult
+        )}. Please format it properly so the user can understand it.`;
+
+        const newResponseString = await new OpenAIService().getResponse(
+            newPrompt
+        );
+
+        await interaction.followUp(newResponseString);
     },
 });

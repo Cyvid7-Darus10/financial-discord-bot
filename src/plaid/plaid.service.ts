@@ -6,18 +6,22 @@ export class PlaidService {
     private accessToken: string;
 
     constructor() {
-        const configuration = new Configuration({
-            basePath: PlaidEnvironments.sandbox,
-            baseOptions: {
-                headers: {
-                    'PLAID-CLIENT-ID': PLAID_CLIENT_ID,
-                    'PLAID-SECRET': PLAID_SECRET,
+        try {
+            const configuration = new Configuration({
+                basePath: PlaidEnvironments.sandbox,
+                baseOptions: {
+                    headers: {
+                        'PLAID-CLIENT-ID': PLAID_CLIENT_ID,
+                        'PLAID-SECRET': PLAID_SECRET,
+                    },
                 },
-            },
-        });
+            });
 
-        this.client = new PlaidApi(configuration);
-        this.accessToken = ACCESS_TOKEN;
+            this.client = new PlaidApi(configuration);
+            this.accessToken = ACCESS_TOKEN;
+        } catch (error) {
+            console.error('Error initializing Plaid client', error);
+        }
     }
 
     /**

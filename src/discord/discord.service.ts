@@ -50,6 +50,7 @@ export default class GPTBotClient extends Client {
             await this.resolveModules();
             await this.login(BOT_TOKEN);
         } catch (error) {
+            console.log('bot token: ' + BOT_TOKEN);
             console.error('Error during start:', error);
         }
     }
