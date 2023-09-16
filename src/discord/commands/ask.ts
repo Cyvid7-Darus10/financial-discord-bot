@@ -52,7 +52,8 @@ export default new Command({
 
         current_date: ${currentDate}
         
-        Given the statement '${sentenceOption}', determine the appropriate action. Respond with a JSON in the format: {\"choice\": \"get_account_routing | get_transactions | check_balance | get_item_details | get_accounts | nothing\", \"extra_details\": {\"start_date\": \"If provided, format: YYYY-MM-DD else none\", \"end_date\": \"If provided, format: YYYY-MM-DD else none\"}}. Only return the JSON structure.`;
+        Given the statement '${sentenceOption}', determine the appropriate action. Respond with a JSON in the format: {\"choice\": \"get_account_routing | get_transactions | check_balance | get_item_details | get_accounts | 
+        \", \"extra_details\": {\"start_date\": \"If provided, format: YYYY-MM-DD else return null\", \"end_date\": \"If provided, format: YYYY-MM-DD else return null\"}}. Only return the JSON structure.`;
 
         const responseString = await new OpenAIService().getResponse(
             structuredPrompt
@@ -74,6 +75,8 @@ export default new Command({
         const plaidService = new PlaidService();
 
         const { choice, extra_details } = parsedResponse;
+        console.log('Choice:', choice);
+        console.log('Extra details:', extra_details);
         switch (choice) {
             case 'get_account_routing':
                 plaidResult = await plaidService.getAccountDetails();
@@ -113,9 +116,16 @@ export default new Command({
                 return;
         }
 
-        const newPrompt = `Here's the data I received: ${JSON.stringify(
+        const newPrompt = `
+        You're an assistant well-versed in the realm of finance. Your primary task is to demystify and elucidate financial details, making them comprehensible to all, irrespective of their financial acumen. 
+        Given this context, examine the raw financial data provided: ${JSON.stringify(
             plaidResult
-        )}. Can you help me present this in a user-friendly manner?`;
+        )}. Transform this data into a succinct, clear message, steering clear of complex jargon. 
+        For further context, consider that the user's initial query or input was: "${sentenceOption}".
+        Please respond accordingly.
+        `;
+
+        console.log('New prompt:', newPrompt);
 
         const newResponseString = await new OpenAIService().getResponse(
             newPrompt
