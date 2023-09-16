@@ -43,17 +43,23 @@ export default new Command({
 
         // Modify the sentenceOption to format the prompt for JSON structured output.
         const currentDate = dayjs().format('YYYY-MM-DD');
-        const structuredPrompt = `Based on the following functionalities of the PlaidService:
-        1. 'get_transactions' - Fetches transactions for a specific date range from a user's linked bank account.
-        2. 'get_account_routing' - Retrieves account and routing numbers for checking and savings accounts.
-        3. 'check_balance' - Fetches real-time account balances.
-        4. 'get_item_details' - Obtains specific details about a bank item, like the institution and billed products.
-        5. 'get_accounts' - Gets high-level information about all accounts associated with a bank item.
-
-        current_date: ${currentDate}
+        const structuredPrompt = `
+        Given the capabilities of the PlaidService:
+        1. 'get_transactions' - Fetch transactions for a specified date range from a user's linked bank account.
+        2. 'get_account_routing' - Retrieve account and routing numbers for checking and savings accounts.
+        3. 'check_balance' - Fetch real-time account balances.
+        4. 'get_item_details' - Obtain specific details about a bank item, such as the institution and billed products.
+        5. 'get_accounts' - Access high-level details about all accounts linked with a bank item.
         
-        Given the statement '${sentenceOption}', determine the appropriate action. Respond with a JSON in the format: {\"choice\": \"get_account_routing | get_transactions | check_balance | get_item_details | get_accounts | 
-        \", \"extra_details\": {\"start_date\": \"If provided, format: YYYY-MM-DD else return null\", \"end_date\": \"If provided, format: YYYY-MM-DD else return null\"}}. Only return the JSON structure.`;
+        Considering the current date as: ${currentDate},
+        
+        Review the user's input: '${sentenceOption}'. 
+        
+        If the statement appears unrelated or out of context concerning Plaid transactions, provide an immediate human-readable response to clarify or guide the user. 
+        
+        Otherwise, indicate the appropriate action by responding with a JSON structure in this format: {\"choice\": \"get_account_routing | get_transactions | check_balance | get_item_details | get_accounts | 
+        \", \"extra_details\": {\"start_date\": \"If specified, format: YYYY-MM-DD; otherwise, return null\", \"end_date\": \"If specified, format: YYYY-MM-DD; otherwise, return null\"}}.
+        `;
 
         const responseString = await new OpenAIService().getResponse(
             structuredPrompt
@@ -65,9 +71,7 @@ export default new Command({
         } catch (error) {
             console.error("Failed to parse OpenAI's response:", error);
             console.error("OpenAI's response:", responseString);
-            await interaction.followUp(
-                'Sorry, I encountered an error processing the response.'
-            );
+            await interaction.followUp(responseString || 'No response.');
             return;
         }
 
@@ -112,7 +116,7 @@ export default new Command({
                     `Unsupported action: ${choice}. OpenAI's response:`,
                     responseString
                 );
-                await interaction.followUp(`Unsupported action: ${choice}`);
+                await interaction.followUp(responseString);
                 return;
         }
 
