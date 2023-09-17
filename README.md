@@ -1,4 +1,4 @@
-# Discord Bot (Nisa.ai Internal Project)
+# Discord Bot Connect with Plaid and Chat GPT
 
 Welcome to Nisa.ai's internal Discord bot project. This bot, built using TypeScript, not only facilitates engaging interactions via OpenAI's GPT-4 model within our Discord server but also integrates with Plaid for advanced financial functionalities.
 
@@ -90,9 +90,3 @@ We've integrated some of the best libraries and packages to enhance our bot's fu
 -   [jest](https://www.npmjs.com/package/jest) & [ts-jest](https://www.npmjs.com/package/ts-jest): Essential testing utilities for our codebase.
 -   [tsc-watch](https://www.npmjs.com/package/tsc-watch): Enhanced TypeScript compilation.
 -   [prettier](https://www.npmjs.com/package/prettier): Keeping our code clean and formatted.
-
-## 📝 Notes
-
--   This project is exclusively intended for the internal usage of Nisa.ai team members.
--   Facing issues? Have suggestions or features in mind? Reach out to our project maintainers or create a ticket in our internal tracking system.
--   Stay updated! Regularly pull updates from the repository to ensure you're working with the latest version.
