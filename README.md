@@ -1,6 +1,6 @@
 # Discord Bot Connect with Plaid and Chat GPT
 
-Welcome to Nisa.ai's internal Discord bot project. This bot, built using TypeScript, not only facilitates engaging interactions via OpenAI's GPT-4 model within our Discord server but also integrates with Plaid for advanced financial functionalities.
+ This bot, built using TypeScript, not only facilitates engaging interactions via OpenAI's GPT-4 model within our Discord server but also integrates with Plaid for advanced financial functionalities.
 
 ## 🌟 Features
 
