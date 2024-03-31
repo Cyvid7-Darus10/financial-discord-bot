@@ -1,4 +1,4 @@
-# Discord Bot Connect with Plaid and Chat GPT
+# Discord Bot Connected with Plaid and Chat GPT
 
  This bot, built using TypeScript, not only facilitates engaging interactions via OpenAI's GPT-4 model within our Discord server but also integrates with Plaid for advanced financial functionalities.
 
